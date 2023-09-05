@@ -15,7 +15,6 @@ function CoinPage() {
   const dispatch = useDispatch();
   const { value, loading } = useSelector((state) => state.coin);
   const data = {nodes : value}
-  console.log(value);
   const [inputText, setInputText] = useState('');
   const [selectedType, setSelectedType] = useState('');
 
@@ -56,12 +55,12 @@ function CoinPage() {
   ]);
 
   const COLUMNS = [
-    { label: "ID", renderCell: (item) => item.id },
-    { label: "Name",renderCell: (item) => (
+    { label: "ID", renderCell: (item) => (
       <Link to={`/${item.id}`} style={{ textDecorationLine: "none"}}>
-       { item.name}
+        {item.id}
       </Link>
-  )},
+      )},
+    { label: "Name",renderCell: (item) => item.name},
     { label: "Symbol",renderCell: (item) => item.symbol},
     { label: "Rank", renderCell: (item) => item.rank },
     { label: "Type", renderCell: (item) => item.type },
