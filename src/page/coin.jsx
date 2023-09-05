@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 // import './App.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteValue, fetchCoins, filterhValue, selectValue } from '../reducer/slice/coinSlice';
-import { CoinList } from '../components/list';
 import { CompactTable } from "@table-library/react-table-library/compact";
 import { useTheme } from "@table-library/react-table-library/theme";
 import { getTheme } from "@table-library/react-table-library/baseline";
