@@ -43,13 +43,10 @@ const coinSlice = createSlice({
         }
         return false ;
       });
-
-      console.log(search);
       return { ...state, value: search };
     },
     selectValue: (state, action) => {
       const selectType = action.payload;
-    
       const findSelect = state.value.filter((item) => {
         if (typeof item.type === 'string' && item.type.toLowerCase() === selectType.toLowerCase()) {
           return true;
@@ -60,14 +57,10 @@ const coinSlice = createSlice({
     },
     deleteValue: (state, action) => {
       const coinIdToDelete = action.payload;
-
       const deleteData =  state.value.filter((item) => item.id !== coinIdToDelete);
       return {...state, value: deleteData}
-    
     }
-    
   }, 
-
   extraReducers: (builder) => {
     builder
       .addCase(fetchCoins.pending, (state) => {
@@ -101,11 +94,9 @@ const coinDetailSlice = createSlice({
         state.loading = false;
       })
   },
-
 })
 
 export const { filterhValue, selectValue, deleteValue } = coinSlice.actions;
-
 
 export const coinReducer = coinSlice.reducer;
 export const detailReducer = coinDetailSlice.reducer;
