@@ -7,6 +7,10 @@ export const Layouts = ({children}) => {
     <div className="body-layout">
     {children}
     </div>
+    <div className="footer">
+        Dibuat oleh : Muhamad Rizky Irvandi
+    </div>
+
     </>
   )
 }
