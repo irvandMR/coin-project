@@ -34,16 +34,18 @@ const coinSlice = createSlice({
   initialState: initialState,
   reducers: {
     filterhValue: (state, action) => {
-      const inputText = action.payload;
-      const search = state.value.filter((item) => {
-        if (typeof item.name === 'string') {
-          return (
-            item.name.toLowerCase().includes(inputText.toLowerCase()) 
-          );
-        }
-        return false ;
-      });
-      return { ...state, value: search };
+      const inputText = action.payload.toLowerCase();
+
+      if (!inputText) {
+        return { ...state, filter: [], searchText: inputText };
+      } else {
+        const search = state.value.filter((item) => {
+          if (typeof item.name === 'string') {
+            return item.name.toLowerCase().includes(inputText);
+          }
+        });
+        return { ...state, filter: search, searchText: inputText };
+      }
     },
     selectValue: (state, action) => {
       const selectType = action.payload;
@@ -53,12 +55,12 @@ const coinSlice = createSlice({
         }
         return false;
       });
-      return { ...state, value: findSelect, selectedType: selectType };
+      return { ...state, filter: findSelect, selectedType: selectType };
     },
     deleteValue: (state, action) => {
       const coinIdToDelete = action.payload;
       const deleteData =  state.value.filter((item) => item.id !== coinIdToDelete);
-      return {...state, value: deleteData}
+      return { value:deleteData}
     }
   }, 
   extraReducers: (builder) => {
@@ -67,8 +69,8 @@ const coinSlice = createSlice({
         state.loading = true
       })
       .addCase(fetchCoins.fulfilled, (state, action) => {
-        state.value = action.payload.slice(0,50)
-        state.filter = action.payload.slice(0,50)
+        state.value = action.payload.slice(0,-1)
+        state.filter = action.payload.slice(0,-1)
         state.loading = false
       })
       .addCase(fetchCoins.rejected, (state) => {
