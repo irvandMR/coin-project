@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-// import './App.css';
+import '../App.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteValue, fetchCoins, filterhValue, selectValue } from '../reducer/slice/coinSlice';
 import { CompactTable } from "@table-library/react-table-library/compact";
@@ -8,18 +8,27 @@ import { getTheme } from "@table-library/react-table-library/baseline";
 import { usePagination } from "@table-library/react-table-library/pagination";
 import { Link } from 'react-router-dom';
 import Layouts from '../components/layouts';
+import ReactPaginate from 'react-paginate';
 
 
 function CoinPage() {
+  let didInit = false
   const dispatch = useDispatch();
-  const { value, loading } = useSelector((state) => state.coin);
-  const data = {nodes : value}
+  const { value, loading, filter, searchText } = useSelector((state) => state.coin);
+  const data = {nodes :  filter || value}
+  
   const [inputText, setInputText] = useState('');
   const [selectedType, setSelectedType] = useState('');
+  
 
   useEffect(() => {
-    dispatch(fetchCoins());
-  }, []);
+    if(!didInit){
+      didInit = true;
+      dispatch(fetchCoins());
+    }
+  }, [dispatch]);
+
+ 
 
   const handleSearch = (e) => {
     dispatch(filterhValue(inputText));
@@ -67,24 +76,36 @@ function CoinPage() {
     { label: "Action", renderCell: (item) => {
       return(
         <>
-        <button type="button" className="btn btn-danger" onClick={() =>handleDelete(item.id)} >Delete</button>
+        <button type="button" className="btn btn-danger" onClick={() => handleDelete(item.id)} >Delete</button>
         </>
       )
     } },
   ];
 
-  const pagination = usePagination(data, {
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 5;
+  const pageCount = Math.ceil(data.nodes.length / itemsPerPage);
+
+  const startIndex = currentPage * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedData = data.nodes.slice(startIndex, endIndex);
+
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
+
+  const pagination = usePagination(paginatedData, {
     state: {
-      page: 0,
-      size: 5,
+      page: currentPage,
+      size: itemsPerPage,
     },
     onChange: onPaginationChange,
   });
 
   function onPaginationChange(action, state) {
-    // console.log(action, state);
+    pagination.fns.onSetPage(pagination.state.page)
   }
-  
+
   return (
     <>
     
@@ -99,8 +120,8 @@ function CoinPage() {
                 onChange={handleTypeChange}
               >
                 <option value="select type">Select Type</option>
-                <option value="Coin">Coin</option>
-                <option value="Token">Token</option>
+                <option value="coin">Coin</option>
+                <option value="token">Token</option>
               </select>
 
               <input
@@ -116,35 +137,35 @@ function CoinPage() {
               </button>
             </div>
 
-            {loading ? (<>Loading...</>): (<CompactTable columns={COLUMNS} data={data} theme={theme}  pagination={pagination}></CompactTable>)}
-
-        
-
-        
-
-
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <span>Total Pages: {pagination.state.getTotalPages(data.nodes)}</span>
-
-          <span>
-          
-            {pagination.state.getPages(data.nodes).map((_, index) => (
-              <button
-                key={index}
-                type="button"
-                style={{
-                  fontWeight: pagination.state.page === index ? "bold" : "normal",
-                }}
-                onClick={() => pagination.fns.onSetPage(index)}
-                className='mx-1 btn btn-outline-info'
-              >
-                {index + 1}
-              </button>
-            ))}
-          </span>
-        </div>
+            {loading ? (
+            <>Loading...</>)
+            : (
+              <>
+              <CompactTable columns={COLUMNS} data={data} theme={theme}  pagination={pagination}></CompactTable>
+              <div style={{ display: "flex", justifyContent: "end" }}>
+                <span>
+                  <ReactPaginate
+                  nextLabel=">"
+                  previousLabel="<"
+                  previousClassName={'pagination__btn'}
+                  breakClassName={'pagination__break'}
+                  nextClassName={'pagination__btn'}
+                  containerClassName={"pagination"}
+                  pageClassName={"pagination__btn"}
+                  pageLinkClassName={"pagination__btn_link"}
+                  previousLinkClassName={"pagination__link"}
+                  nextLinkClassName={"pagination__link"}
+                  disabledClassName={"pagination__link--disabled"}
+                  activeClassName={"pagination__link--active"}
+                  onPageChange={handlePageChange}
+                  pageRangeDisplayed={5}
+                  pageCount={pageCount}
+                  />
+                </span>
+              </div>
+              </>
+            )}
       </div>
-
     </Layouts>
    
     
