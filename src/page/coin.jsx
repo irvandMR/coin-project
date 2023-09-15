@@ -153,6 +153,7 @@ function CoinPage() {
                   containerClassName={"pagination"}
                   pageClassName={"pagination__btn"}
                   pageLinkClassName={"pagination__btn_link"}
+                  
                   previousLinkClassName={"pagination__link"}
                   nextLinkClassName={"pagination__link"}
                   disabledClassName={"pagination__link--disabled"}
