@@ -15,7 +15,7 @@ function CoinPage() {
   let didInit = false
   const dispatch = useDispatch();
   const { value, loading, filter, searchText } = useSelector((state) => state.coin);
-  const data = {nodes :  filter || value}
+  const data = {nodes :  filter.length ? filter : searchText ? filter : value || filter}
   
   const [inputText, setInputText] = useState('');
   const [selectedType, setSelectedType] = useState('');

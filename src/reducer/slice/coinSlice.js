@@ -60,7 +60,7 @@ const coinSlice = createSlice({
     deleteValue: (state, action) => {
       const coinIdToDelete = action.payload;
       const deleteData =  state.value.filter((item) => item.id !== coinIdToDelete);
-      return { value:deleteData}
+      return { value:deleteData, filter: deleteData}
     }
   }, 
   extraReducers: (builder) => {
